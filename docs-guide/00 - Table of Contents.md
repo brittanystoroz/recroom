@@ -12,7 +12,7 @@ A tool belt for Mobile Web App developers
 ### [Chapter 4 - Let's Build a Rec Room App](04 - Let's Build a Rec Room App.md)
 ### [Chapter 7 - Web APIs - Accessing Phone APIs and Hardware](07 - Web APIs - Accessing Phone APIs and Hardware.md)
 ### [Chapter 8 - Manifest and Permissions](08 - Manifest and Permissions.md)
-### [Chapter 9 - Data Management, Storage and Offline](09 - Data Management, Storage and Offline)
+### [Chapter 9 - Data Management, Storage and Offline](09 - Data Management, Storage and Offline.md)
 
 ## Appendix
 
