@@ -3,7 +3,7 @@
 ![Rec Room logo](images/recroom-logo.jpg?raw=true)
 
 
-# Chapter 8: Manifest and Permissions
+# Chapter 7: Manifest and Permissions
 
 Every open web app requires a manifest.webapp file to be placed in the app's root folder. The concept of a manifest file is common practice, and you may be familiar with it from building other tools or apps for different environments. The manifest provides important information about your app: name, description, version, icons, locale strings, domains the app can be installed from, etc.
 
