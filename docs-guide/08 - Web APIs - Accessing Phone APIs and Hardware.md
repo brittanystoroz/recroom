@@ -16,7 +16,7 @@ Install API example from App Center Quickstart?
 
 
 
-For a list of the APIs that can be accessed with hosted and privileged apps, see MDN's [App Permissions][https://developer.mozilla.org/en-US/Apps/Build/App_permissions] table.  For more information on working with these APIs, see the [WebAPI][https://developer.mozilla.org/en-US/docs/WebAPI] page.
+For a list of the APIs that can be accessed with hosted and privileged apps, see MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table.  For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page.
 
 
-[Quick Start API Functionality][https://developer.mozilla.org/en-US/Apps/Quickstart#Web_API_functionality]
+[Quick Start API Functionality](https://developer.mozilla.org/en-US/Apps/Quickstart#Web_API_functionality)
