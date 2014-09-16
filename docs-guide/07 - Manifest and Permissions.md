@@ -84,7 +84,7 @@ For example, here's an app that needs permission to use the device's contacts an
 To troubleshoot and validate your manifest file, you can use Mozilla's [app validator][https://marketplace.firefox.com/developers/validator].
 
 [Optional manifest fields][https://developer.mozilla.org/en-US/Apps/Build/Manifest#Optional_App_Manifest_Fields]
-
+[App Permissions Matrix][https://developer.mozilla.org/en-US/Apps/Build/App_permissions]
 
 default_locale
 activities

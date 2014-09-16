@@ -32,7 +32,20 @@ There are several technologies available that make data management and storage e
   - the ember data library helps manage model data; still in beta but API is pretty stable
   - [ember-data][ember-data]
 
-TODO code example from high fidelity using storage technologies
+TODO code example from high fidelity using storage technologies `app/scripts/store.js`
+
+````
+HighFidelity.ApplicationSerializer = DS.IndexedDBSerializer.extend();
+HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
+    //autoIncrement: true,
+    databaseName: 'hifi',
+    version: 1,
+    migrations: function() {
+        this.addModel('podcast');
+        this.addModel('episode');
+    }
+});
+````
 
 [indexed-db]: https://www.google.com/url?q=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FIndexedDB&sa=D&sntz=1&usg=AFQjCNHuwdSJ3rzZYhJSoAA6UrMuLW0Bvg
 [local-forage]: https://github.com/mozilla/localForage
