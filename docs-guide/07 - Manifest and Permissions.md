@@ -5,11 +5,11 @@
 
 # Chapter 7: Manifest and Permissions
 
-Every open web app requires a manifest.webapp file to be placed in the app's root folder. The concept of a manifest file is common practice, and you may be familiar with it from building other tools or apps for different environments. The manifest provides important information about your app: name, description, version, icons, locale strings, domains the app can be installed from, etc.
+Every open web app requires a manifest.webapp file to be placed in the app's root folder. The concept of a manifest file is common practice, and you may be familiar with it from building other tools or apps for different environments. The manifest provides important details about your application (name, description, version, icons, locale strings, etc.) and should be readable by both users and the Firefox Marketplace.
 
-This is also where you will specify permissions for your application, that will allow it to provide advanced functionality, and alert users of what your application needs access to.
+The manifest file is also where you will specify permissions for your application that will allow it to provide advanced functionality, and alert users of what your application needs access to.
 
-Let's look at the webapp.manifest file from the podcasts app introduced in chapter four:
+Let's look at the webapp.manifest file from the podcasts app introduced in Chapter 4:
 
 ```
 {
@@ -49,6 +49,7 @@ Let's look at the webapp.manifest file from the podcasts app introduced in chapt
 
 Note that the icon paths are absolute from the app's origin. Paths to externally hosted icons must be fully qualified. Icons must be square, and in `.png` format.
 
+## Application Types
 The `type` and `permissions` fields are both important to ensure your application has access to the APIs it needs. Different types of apps grant access to varying levels of permissions. If you are specifying permissions for your application, the type of application must coincide accordingly. The following type values affect permissions accordingly:
 
 `web`: grants least access to WebAPIs, used for apps that do not require any special permissions
@@ -57,6 +58,7 @@ The `type` and `permissions` fields are both important to ensure your applicatio
 
 Your apps will generally have a type of `web` or `privileged`. When you are specifying permissions for your application, you must specify the type as `privileged`. If the `type` field is missing, it will default to `web`, which will cause unexpected behaviors when trying to access APIs.
 
+## Permissions
 When setting permissions for your application, each permission should have a name, description and access level.
 
 Each permission requires:
