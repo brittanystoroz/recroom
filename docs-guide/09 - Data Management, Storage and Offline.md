@@ -14,19 +14,50 @@ For instance, the load on the server is lessened, making your app more responsiv
 Below are some of the most common techniques for successful data management in online and offline circumstances. Rec Room apps specifically make use of IndexedDB and Ember Data, but we'll also touch on other popular tools.
 
 ### IndexedDB
-[IndexedDB][indexed-db] provides client-side storage of structured data. This means we can persistently store data inside a user's browser. 
+[IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps.
 
-- IndexedDB allows your application to work online and offline
-- transactional, trying to use a transaction after it has completed throws exceptions, cant stomp all over eachothers modifications
-- mostly asynchronous API
-- you don't store or retrieve values from the database through synchronous means. instead you request that a db operation happens.
+The concepts behind IndexedDB are slightly different than you may be used to when working with a traditional database. IndexedDB is transactional - meaning you are not synchronously storing or retrieving values from the database, rather you are requesting that a database operation occurs. This helps prevent multiple data modifications from overriding each other.
+
+The API for IndexedDB is asynchronous, meaning any requested data will be delivered to a callback, rather than directly through return values.
+
+With IndexedDB, after opening a database connection, you can create object stores for your application models. For example, in our High Fidelity application from Chapter 4, we would create an object store for our `podcast` model called `podcastObjectStore`. In this object store, we can persist any data for our podcasts as regular JavaScript objects.
+
+````
+var request = indexedDB.open("hifi"); // open database named "hifi"
+
+// This handler is called when we are opening a new version of
+// our database and allows us to specify an updated schema. 
+request.onupgradeneeded = function(event) {
+  var db = event.target.result;
+
+  // Create an objectStore to hold information about our podcasts.
+  // We're going to use "rssURL" as our unique key path.
+  var objectStore = db.createObjectStore("podcasts", { keyPath: "rssURL" });
+
+  // Create an index to search podcasts by name. We may have duplicates
+  // so we can't use a unique index.
+  objectStore.createIndex("name", "name", { unique: false });
+
+  // Use transaction oncomplete to make sure the objectStore creation is 
+  // finished before adding data into it.
+  objectStore.transaction.oncomplete = function(event) {
+    // Store values in the newly created objectStore.
+    var podcastObjectStore = db.transaction("podcasts", "readwrite").objectStore("podcasts");
+    for (var i in podcastData) {
+      podcastObjectStore.add(podcastData[i]);
+    }
+  }
+};
+````
+
+Adding an index to our object store makes it efficient to query and iterate across, giving us the ability to work on and offline.
+
 - you are notified by a DOM event that has properties for helping you determine the status of your request and specifying listeners.
-- you create an Object Store **what?** for a type of data and simply persist Javascript Objects to that store.
-- each object store can have a collection of indexes that make it efficient to query and iterate across (giving us the ability to work on and offline)
-- The Asynchronous API is a non-blocking system and as such will not get data through return values, but rather will get data delivered to a defined callback function. 
 
-IndexedDB is currently the underlying persistence mechanism in recroom apps, though we are using some additional libraries that obfuscate this code which will be explained later in this section.
-2
+
+
+IndexedDB is still new and thus may not work consistently across all browsers. For updated information on browser compatibility, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
+
 For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan going over basic usage of IndexedDB.
 
 ** code ** 
