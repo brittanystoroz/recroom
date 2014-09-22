@@ -1,16 +1,15 @@
 # Chapter 9: Data Management, Storage and Offline
 
 
-** blah blah a sentence or two here **
 
-We face an additional set of challenges maintaining our data when developing for mobile devices. Because users may be travelling in and out of connected areas, it's important to have a good strategy around handling offline data.
+Maintaining and storing application data was traditionally a heavy lift where the server took on much of the responsibility. With advancements in client-side JavaScript, and the rise of MVC frameworks, we've been better able to handle the implicit model data we encounter on the client-side. However, developing for mobile devices adds some additional challenges. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data.
 
 The main goal of offline technologies is to seamlessly store and sync data regardless of internet connectivity. When implementing this functionality, you're likely to notice that offline techniques also benefit other aspects of your application. For instance, the load on the server is lessened, making your app more responsive and better equipped to handle a robust user experience. Additionally, potential security risks are alleviated as our need to rely on technologies such as cookies and http diminishes. 
 
 ** blah blah a sentence or two here **
 
 ## Common Strategies
-There are several technologies available that make data management and storage easier:
+There are several technologies available that make client-side data management and storage easier:
 
 ### IndexedDB
 [IndexedDB][indexed-db] provides client-side storage of structured data. This means we can persistently store data inside a user's browser. 
