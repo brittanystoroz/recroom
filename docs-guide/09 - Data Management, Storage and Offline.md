@@ -60,9 +60,28 @@ For more information on how to work with IndexedDB, see [Using IndexedDB](https:
 
 
 ### LocalForage
-[localForage][local-forage] is a JavaScript library for asynchronous storage (via IndexedDB or WebSQL where available) with a simple, localStorage-like API.
+[localForage][local-forage] is a JavaScript library that provides a localStorage-like API for interacting with a number of underlying storage technologies.
 
-** code ** 
+Callbacks or promises: 
+
+````
+function doSomethingElse(value) {
+    console.log(value);
+}
+
+localforage.setItem('key', 'value', doSomethingElse);
+localforage.setItem('key', 'value').then(doSomethingElse);
+
+localforage.getItem('key', alert);
+````
+
+localForage will use whichever persistence mechanism is available, in this order:
+
+1. IndexedDB
+2. WebSQL
+3. localStorage
+
+More documentation is available [here](http://mozilla.github.io/localForage/).
 
 
 ### Ember Data
