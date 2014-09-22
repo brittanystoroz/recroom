@@ -60,7 +60,7 @@ Here we are defining our schema and setting up relationships for our model. We d
 
 Ember Data also provides several relationship types to help you describe how your models associate with each other. In this scenario, we are defining a one-to-many relationship, where a single `podcast` has many `episodes`:
   
-  episodes: DS.hasMany('episode', {async: true}), // a podcast model has many episodes
+  `episodes: DS.hasMany('episode', {async: true}) // a podcast model has many episodes`
 
 The `{async: true}` hash allows for [asynchronous data retrieval](http://www.toptal.com/emberjs/a-thorough-guide-to-ember-data#associationModifiers). This means we can request data that has an association or relationship to another data record, and specify a callback to be invoked once our associated data is available.
 
