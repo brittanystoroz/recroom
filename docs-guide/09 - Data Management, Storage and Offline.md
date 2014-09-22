@@ -20,6 +20,8 @@ The concepts behind IndexedDB are slightly different than you may be used to whe
 
 The API for IndexedDB is asynchronous, meaning any requested data will be delivered to a callback, rather than directly through return values.
 
+Adding an index to our object store makes it efficient to query and iterate across, giving us the ability to work on and offline.
+
 With IndexedDB, after opening a database connection, you can create object stores for your application models. For example, in our High Fidelity application from Chapter 4, we would create an object store for our `podcast` model called `podcastObjectStore`. In this object store, we can persist any data for our podcasts as regular JavaScript objects.
 
 ````
@@ -50,17 +52,12 @@ request.onupgradeneeded = function(event) {
 };
 ````
 
-Adding an index to our object store makes it efficient to query and iterate across, giving us the ability to work on and offline.
-
-- you are notified by a DOM event that has properties for helping you determine the status of your request and specifying listeners.
-
-
+*Note: This is example code. The High Fidelity application utilizes additional technologies (explained later in this section) that hook into IndexedDB.*
 
 IndexedDB is still new and thus may not work consistently across all browsers. For updated information on browser compatibility, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
 
 For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan going over basic usage of IndexedDB.
 
-** code ** 
 
 ### LocalForage
 [localForage][local-forage] is a JavaScript library for asynchronous storage (via IndexedDB or WebSQL where available) with a simple, localStorage-like API.
