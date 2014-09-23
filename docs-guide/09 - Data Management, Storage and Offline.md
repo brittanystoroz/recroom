@@ -159,16 +159,42 @@ HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
 ````
 
 ## Offline First
-Empathy for offline users is hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. 
+Empathy for offline users is hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
 
 - What UI will the user see?
 - What interactivity is still available to them?
 - Will their actions offline be reflected next time they are reconnected?
 
-Finally, if your app (or a significant part of your app) does not work offline, be sure to indicate that to your users. [offline.js](http://github.hubspot.com/offline/docs/welcome/) is an offline detection library that makes it easy to confirm the state of a user's connectivity, and gracefully handle any events or tasks that need to occur when toggling between on and offline. This could mean synchronizing data, or simply displaying more informative messaging when a user's connection status changes.
+### Detecting Connectivity
+In order to provide a more seamless user experience regardless of connectivity, we must be able to determine the status of our user's connection. If a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.
+
+[offline.js](http://github.hubspot.com/offline/docs/welcome/) is an offline detection library that makes it easy to confirm the state of a user's connectivity, and gracefully handle any events or tasks that need to occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging.
+
+You can start working with offline.js by simply adding it as a JavaScript file to your page.
+
+offline.js tests connectivity by making an XHR request to load a `/favicon.ico` file by default. You can configure the file it checks for by providing a different URL in `Offline.options`:
+
+```javascript
+Offline.options = {checks: {xhr: {url: '/connection-test'}}};
+````
+
+Once our connectivity check is configured, we can tell offline.js to detect the current state by calling `Offline.check()`. This will return an XHR response, and sets `Offline.state` to either `up` (if we are online) or `down` (if we are offline).
+
+We can now get the user's state by asking for the value of `Offline.state`, and provide callbacks to execute during different stages of connectivity. offline.js provides several helpful events that we can bind to for handling state changes. For example, if we want to display a notification to the user that they have gone offline, we can simply call:
+
+```javascript
+Offline.on('down', function() {
+  var message = "You can continue listening to your saved podcasts, but cannot search for new ones until a connection returns.";
+  var offlineNotification = new Notification('You Are Offline', { body: message });
+});
+````
+
+### When to Save State
+A solid, offline-first application will store its assets and data offline on its first load after installation. This will ensure that there are available resources for your app to pull from during subsequent uses when offline. When a connection is regained, the application should synchronize any data and update available assets.
+
+During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state locally whenever a user closes your application so they can pick up where they left off next time they open it.
 
 For more guidance on offline development, see our [Offline apps developer recommendations page](https://developer.mozilla.org/en-US/Apps/Build/Offline).
-
 
 
 [indexed-db]: https://www.google.com/url?q=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FIndexedDB&sa=D&sntz=1&usg=AFQjCNHuwdSJ3rzZYhJSoAA6UrMuLW0Bvg
