@@ -191,7 +191,7 @@ Offline.on('down', function() {
 ### When to Save State
 A solid, offline-first application will store its assets and data offline on its first load after installation. This will ensure that there are available resources for your app to pull from during subsequent uses when offline. When a connection is regained, the application should synchronize any data and update available assets.
 
-During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state locally whenever a user closes your application so they can pick up where they left off next time they open it.
+During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state locally whenever a user closes your application so they can pick up where they left off.
 
 For more guidance on offline development, see our [Offline apps developer recommendations page](https://developer.mozilla.org/en-US/Apps/Build/Offline).
 
