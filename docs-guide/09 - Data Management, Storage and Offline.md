@@ -52,7 +52,7 @@ IndexedDB provides a `transaction.oncomplete` handler that will be called when o
 
 ````
 objectStore.transaction.oncomplete = function(event) {
-  // Store values in the newly created objectStore.
+  // Store values in our podcasts object store
   var podcastObjectStore = db.transaction("podcasts", "readwrite").objectStore("podcasts");
   for (var i in podcastData) {
     podcastObjectStore.add(podcastData[i]);
@@ -60,9 +60,22 @@ objectStore.transaction.oncomplete = function(event) {
 }
 ````
 
-For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan going over basic usage of IndexedDB.
+Now that we have data in our object store, we can retrieve it with a simple `get()`, where we provide a value for the keyPath we specified earlier (`rssUrl`):
 
-IndexedDB is still new and thus may not work consistently across all browsers. The next technology we'll go over, localForage, will help you handle these browser compatibility issues.  For updated information on support for IndexedDB, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
+````
+var transaction = db.transaction(["podcasts"]); // create a new transaction, specifying a list of object stores we will need access to
+var objectStore = transaction.objectStore("podcasts"); // get the podcasts object store from our transation
+var request = objectStore.get("rss.url.com/podcast-title"); // get a podcast with an rssUrl of rss.url.com/podcast-title
+request.onsuccess = function(event) {
+  // We are provided with request.result in our onsuccess callback,
+  // which gives us access to the property values on our data record
+  console.log("Podcast name is: " + request.result.name);
+};
+````
+
+For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB) and [Basic Concepts of IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB#gloss_transaction). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan going over basic usage of IndexedDB.
+
+IndexedDB is still new and thus may not work consistently across all browsers. The next technology we'll go over, localForage, will help you handle these browser compatibility issues. For updated information on support for IndexedDB, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
 
 
 ### LocalForage
