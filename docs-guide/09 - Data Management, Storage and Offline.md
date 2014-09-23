@@ -114,12 +114,8 @@ In our High Fidelity app from Chapter 4, we work with two different models: podc
 HighFidelity.Podcast = DS.Model.extend({
     title: DS.attr('string'),
     description: DS.attr('string'),
-    episodes: DS.hasMany('episode', {async: true}), // set up relationship between podcast and episode models
+    episodes: DS.hasMany('episode', {async: true}),
     rssURL: DS.attr('string'),
-    lastUpdated: DS.attr('number'),
-    lastPlayed: DS.attr('number'),
-    coverImageBlob: DS.attr('string'),
-    coverImageURL: DS.attr('string')
 });
 ````
 
