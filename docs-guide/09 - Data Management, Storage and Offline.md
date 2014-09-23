@@ -22,11 +22,11 @@ First you must request to open a database:
 var request = indexedDB.open("hifi"); // open database named "hifi"
 ````
 
-Making requests (as we just requested to open a database) is a key concept of IndexedDB. IndexedDB is transactional, meaning rather than directly storing or receiving values from the database, we are requesting that a database operation occurs. This helps prevent multiple data modifications from overriding each other.
+Making requests (as we just did to open a database) is a key concept of IndexedDB. IndexedDB is transactional, meaning rather than directly storing or receiving values from the database, we are requesting that a database operation occurs. This helps prevent multiple data modifications from overriding each other.
 
 When you create a new database, an `onupgradeneeded` event will be triggered. In the handler for this event, we can create **object stores** for our application models. Think of object stores as IndexedDB's equivalent of tables in relational databases.
 
-In our High Fidelity app, we want to create an object store for our `podcast` model. With this object store, we will be able to create records of data for each of our podcasts, and persist them to the database as regular JavaScript objects:
+In our High Fidelity app, we'll want to create an object store for our `podcast` model. With this object store, we will be able to create records of data for each of our podcasts, and persist them to the database as regular JavaScript objects:
 
 ```javascript
 request.onupgradeneeded = function(event) {
@@ -41,9 +41,9 @@ request.onupgradeneeded = function(event) {
 We now have a place to store all of our podcast data, but we'll also want to query this data. With IndexedDB, we can add an **index** to our object store which will make it efficient to query and iterate across.  In the same `onupgradeneeded` handler, we can add an index like so:
 
 ```javascript
-// Create an index to search podcasts by name. We will set unique
+// Create an index to search podcasts by title. We will set unique
 // to false, in case there happen to be podcasts by the same name.
-objectStore.createIndex("name", "name", { unique: false });
+objectStore.createIndex("title", "title", { unique: false });
 ````
 
 So far we've requested that a podcasts object store be created, and we've requested an index to search it. These interactions are happening as **transactions** - operations for accessing or modifying data in the database. We must wait for these transactions to be completed before we can add data to our object store. In other words, we need to make sure the object store has, in fact, been created.
@@ -69,11 +69,11 @@ var request = objectStore.get("rss.url.com/podcast-title"); // get a podcast wit
 request.onsuccess = function(event) {
   // We are provided with request.result in our onsuccess callback,
   // which gives us access to the property values on our data record
-  console.log("Podcast name is: " + request.result.name);
+  console.log("Podcast title is: " + request.result.title);
 };
 ````
 
-For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB) and [Basic Concepts of IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB#gloss_transaction). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan going over basic usage of IndexedDB.
+For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB) and [Basic Concepts of IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB#gloss_transaction). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan that walks through basic usage of IndexedDB.
 
 IndexedDB is still new and thus may not work consistently across all browsers. The next technology we'll go over, localForage, will help you handle these browser compatibility issues. For updated information on support for IndexedDB, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
 
@@ -83,7 +83,7 @@ IndexedDB is still new and thus may not work consistently across all browsers. T
 
 `bower install localforage`
 
-As mentioned in the previous section, IndexedDB is not consistently supported across all browsers. localForage hides these types of inconsistencies from the user by implementing fallbacks when a backend driver for the datastore (such as IndexedDB) is not available. By default, localForage will select drivers in this order:
+As mentioned in the previous section, IndexedDB is not consistently supported across all browsers. localForage smooths over these types of inconsistencies for the user by implementing fallbacks when a backend driver for the datastore (such as IndexedDB) is not available. By default, localForage will select drivers in this order:
 
 1. IndexedDB
 2. WebSQL
@@ -97,7 +97,7 @@ The API for localForage is asynchronous: instead of our data being delivered thr
 // Set an item and specify a callback
 localforage.setItem('key', 'value', callbackYouDefine);
 
-// Get an item and specify a callback that alerts the value
+// Get an item and log the value to the console
 localforage.getItem('key', function(value) {
   console.log('Retrieved value is: ' + value);
 })
@@ -121,7 +121,7 @@ Recroom apps include the Ember framework to help construct an MVC architecture. 
 
 The [ember-data][ember-data] library will help us manage data for the Ember models in our application, but first we need to define them.
 
-In our High Fidelity app from Chapter 4, we work with two different models: podcasts and episodes. Let's look at the `podcast` model defined in /app/scripts/models/podcast_model.js:
+In our High Fidelity app from Chapter 4, we work with two different models: podcasts and episodes. Let's look at the `podcast` model defined in `/app/scripts/models/podcast_model.js`:
 
 ```javascript
 HighFidelity.Podcast = DS.Model.extend({
@@ -148,7 +148,6 @@ Ember Data is not tied to IndexedDB by default, (it is agnostic to underlying te
 ```javascript
 HighFidelity.ApplicationSerializer = DS.IndexedDBSerializer.extend();
 HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
-    //autoIncrement: true,
     databaseName: 'hifi',
     version: 1,
     migrations: function() {
