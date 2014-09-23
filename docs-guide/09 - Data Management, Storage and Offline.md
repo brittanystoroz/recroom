@@ -98,7 +98,9 @@ The API for localForage is asynchronous: instead of our data being delivered thr
 localforage.setItem('key', 'value', callbackYouDefine);
 
 // Get an item and specify a callback that alerts the value
-localforage.getItem('key', alert)
+localforage.getItem('key', function(value) {
+  console.log('Retrieved value is: ' + value);
+})
 ````
 
 You can also use promises rather than callbacks if you prefer:
@@ -159,11 +161,11 @@ HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
 ## Offline First
 Empathy for offline users is hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. 
 
-- What UI will the user see? **[packaged apps save HTML/CSS/JS by default]**
+- What UI will the user see?
 - What interactivity is still available to them?
 - Will their actions offline be reflected next time they are reconnected?
 
-Finally, if your app (or a significant part of your app) does not work offline, be sure to indicate that to your users. **[ do a check for online/offline connectivity, code example ]**
+Finally, if your app (or a significant part of your app) does not work offline, be sure to indicate that to your users. [offline.js](http://github.hubspot.com/offline/docs/welcome/) is an offline detection library that makes it easy to confirm the state of a user's connectivity, and gracefully handle any events or tasks that need to occur when toggling between on and offline. This could mean synchronizing data, or simply displaying more informative messaging when a user's connection status changes.
 
 For more guidance on offline development, see our [Offline apps developer recommendations page](https://developer.mozilla.org/en-US/Apps/Build/Offline).
 
