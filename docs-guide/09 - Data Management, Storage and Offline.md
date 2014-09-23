@@ -1,7 +1,5 @@
 # Chapter 9: Data Management, Storage and Offline
 
-
-
 Maintaining and storing application data was traditionally a heavy lift where the server took on much of the responsibility. With advancements in client-side JavaScript, and the rise of MVC frameworks, we've been better able to handle the implicit model data we encounter on the client-side.
 
 However, developing for mobile devices adds some additional challenges. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. Luckily, there are several tools available to  help us with our client-side storage and offline data.
@@ -14,49 +12,57 @@ For instance, the load on the server is lessened, making your app more responsiv
 Below are some of the most common techniques for successful data management in online and offline circumstances. Rec Room apps specifically make use of IndexedDB and Ember Data, but we'll also touch on other popular tools.
 
 ### IndexedDB
-[IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps.
+[IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store large amounts of data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps.
 
-The concepts behind IndexedDB are slightly different than you may be used to when working with a traditional database. IndexedDB is transactional - meaning you are not synchronously storing or retrieving values from the database, rather you are requesting that a database operation occurs. This helps prevent multiple data modifications from overriding each other.
+Rec Room apps utilize additional libraries (explained later in this chapter) that abstract the IndexedDB implementation, but using IndexedDB on it's own is fairly simple. Let's walk through a simple implementation using our High Fidelity app from Chapter 4 as an example.
 
-The API for IndexedDB is asynchronous, meaning any requested data will be delivered to a callback, rather than directly through return values.
-
-Adding an index to our object store makes it efficient to query and iterate across, giving us the ability to work on and offline.
-
-With IndexedDB, after opening a database connection, you can create object stores for your application models. For example, in our High Fidelity application from Chapter 4, we would create an object store for our `podcast` model called `podcastObjectStore`. In this object store, we can persist any data for our podcasts as regular JavaScript objects.
+First you must request to open a database:
 
 ````
 var request = indexedDB.open("hifi"); // open database named "hifi"
+````
 
-// This handler is called when we are opening a new version of
-// our database and allows us to specify an updated schema. 
+Making requests (as we just requested to open a database) is a key concept of IndexedDB. IndexedDB is transactional, meaning rather than directly storing or receiving values from the database, we are requesting that a database operation occurs. This helps prevent multiple data modifications from overriding each other.
+
+When you create a new database, an `onupgradeneeded` event will be triggered. In the handler for this event, we can create **object stores** for our application models. Think of object stores as IndexedDB's equivalent of tables in relational databases.
+
+In our High Fidelity app, we want to create an object store for our `podcast` model. With this object store, we will be able to create records of data for each of our podcasts, and persist them to the database as regular JavaScript objects:
+
+````
 request.onupgradeneeded = function(event) {
   var db = event.target.result;
 
   // Create an objectStore to hold information about our podcasts.
   // We're going to use "rssURL" as our unique key path.
   var objectStore = db.createObjectStore("podcasts", { keyPath: "rssURL" });
-
-  // Create an index to search podcasts by name. We may have duplicates
-  // so we can't use a unique index.
-  objectStore.createIndex("name", "name", { unique: false });
-
-  // Use transaction oncomplete to make sure the objectStore creation is 
-  // finished before adding data into it.
-  objectStore.transaction.oncomplete = function(event) {
-    // Store values in the newly created objectStore.
-    var podcastObjectStore = db.transaction("podcasts", "readwrite").objectStore("podcasts");
-    for (var i in podcastData) {
-      podcastObjectStore.add(podcastData[i]);
-    }
-  }
 };
 ````
 
-*Note: This is example code. The High Fidelity application utilizes additional technologies (explained later in this section) that hook into IndexedDB.*
+We now have a place to store all of our podcast data, but we'll also want to query this data. With IndexedDB, we can add an **index** to our object store which will make it efficient to query and iterate across.  In the same `onupgradeneeded` handler, we can add an index like so:
 
-IndexedDB is still new and thus may not work consistently across all browsers. For updated information on browser compatibility, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
+````
+// Create an index to search podcasts by name. We will set unique
+// to false, in case there happen to be podcasts by the same name.
+objectStore.createIndex("name", "name", { unique: false });
+````
+
+So far we've requested that a podcasts object store be created, and we've requested an index to search it. These interactions are happening as **transactions** - operations for accessing or modifying data in the database. We must wait for these transactions to be completed before we can add data to our object store. In other words, we need to make sure the object store has, in fact, been created.
+
+IndexedDB provides a `transaction.oncomplete` handler that will be called when our object store is ready to accept data:
+
+````
+objectStore.transaction.oncomplete = function(event) {
+  // Store values in the newly created objectStore.
+  var podcastObjectStore = db.transaction("podcasts", "readwrite").objectStore("podcasts");
+  for (var i in podcastData) {
+    podcastObjectStore.add(podcastData[i]);
+  }
+}
+````
 
 For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan going over basic usage of IndexedDB.
+
+IndexedDB is still new and thus may not work consistently across all browsers. The next technology we'll go over, localForage, will help you handle these browser compatibility issues.  For updated information on support for IndexedDB, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
 
 
 ### LocalForage
