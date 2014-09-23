@@ -18,7 +18,7 @@ Rec Room apps utilize additional libraries (explained later in this chapter) tha
 
 First you must request to open a database:
 
-````
+```javascript
 var request = indexedDB.open("hifi"); // open database named "hifi"
 ````
 
@@ -28,7 +28,7 @@ When you create a new database, an `onupgradeneeded` event will be triggered. In
 
 In our High Fidelity app, we want to create an object store for our `podcast` model. With this object store, we will be able to create records of data for each of our podcasts, and persist them to the database as regular JavaScript objects:
 
-````
+```javascript
 request.onupgradeneeded = function(event) {
   var db = event.target.result;
 
@@ -40,7 +40,7 @@ request.onupgradeneeded = function(event) {
 
 We now have a place to store all of our podcast data, but we'll also want to query this data. With IndexedDB, we can add an **index** to our object store which will make it efficient to query and iterate across.  In the same `onupgradeneeded` handler, we can add an index like so:
 
-````
+```javascript
 // Create an index to search podcasts by name. We will set unique
 // to false, in case there happen to be podcasts by the same name.
 objectStore.createIndex("name", "name", { unique: false });
@@ -50,7 +50,7 @@ So far we've requested that a podcasts object store be created, and we've reques
 
 IndexedDB provides a `transaction.oncomplete` handler that will be called when our object store is ready to accept data:
 
-````
+```javascript
 objectStore.transaction.oncomplete = function(event) {
   // Store values in our podcasts object store
   var podcastObjectStore = db.transaction("podcasts", "readwrite").objectStore("podcasts");
@@ -62,7 +62,7 @@ objectStore.transaction.oncomplete = function(event) {
 
 Now that we have data in our object store, we can retrieve it with a simple `get()`, where we provide a value for the keyPath we specified earlier (`rssUrl`):
 
-````
+```javascript
 var transaction = db.transaction(["podcasts"]); // create a new transaction, specifying a list of object stores we will need access to
 var objectStore = transaction.objectStore("podcasts"); // get the podcasts object store from our transation
 var request = objectStore.get("rss.url.com/podcast-title"); // get a podcast with an rssUrl of rss.url.com/podcast-title
@@ -83,7 +83,7 @@ IndexedDB is still new and thus may not work consistently across all browsers. T
 
 Callbacks or promises: 
 
-````
+```javascript
 function doSomethingElse(value) {
     console.log(value);
 }
@@ -110,7 +110,7 @@ The [ember-data][ember-data] library will help us manage data for the Ember mode
 
 In our High Fidelity app from Chapter 4, we work with two different models: podcasts and episodes. Let's look at the `podcast` model defined in /app/scripts/models/podcast_model.js:
 
-````
+```javascript
 HighFidelity.Podcast = DS.Model.extend({
     title: DS.attr('string'),
     description: DS.attr('string'),
@@ -127,14 +127,16 @@ Here we are defining our schema and setting up relationships for our model. We d
 
 Ember Data also provides several relationship types to help you describe how your models associate with each other. In this scenario, we are defining a one-to-many relationship, where a single `podcast` has many `episodes`:
   
-  `episodes: DS.hasMany('episode', {async: true}) // a podcast model has many episodes`
+```javascript
+episodes: DS.hasMany('episode', {async: true}) // a podcast model has many episodes
+````
 
 The `{async: true}` hash allows for [asynchronous data retrieval](http://www.toptal.com/emberjs/a-thorough-guide-to-ember-data#associationModifiers). This means we can request data that has an association or relationship to another data record, and specify a callback to be invoked once our associated data is available.
 
 
 Ember Data is not tied to IndexedDB by default, (it is agnostic to underlying technologies), so we have included the npm package [ember-indexeddb-adapter](https://github.com/kurko/ember-indexeddb-adapter/) to help persist our data.
 
-````
+```javascript
 HighFidelity.ApplicationSerializer = DS.IndexedDBSerializer.extend();
 HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
     //autoIncrement: true,
