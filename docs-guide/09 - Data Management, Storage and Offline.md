@@ -79,26 +79,37 @@ IndexedDB is still new and thus may not work consistently across all browsers. T
 
 
 ### LocalForage
-[localForage][local-forage] is a JavaScript library that provides a localStorage-like API for interacting with a number of underlying storage technologies.
+[localForage][local-forage] is a JavaScript library that provides a localStorage-like API for interacting with a number of underlying storage technologies. It can be added to your application as a simple JavaScript file, or be installed via bower:
 
-Callbacks or promises: 
+`bower install localforage`
 
-```javascript
-function doSomethingElse(value) {
-    console.log(value);
-}
-
-localforage.setItem('key', 'value', doSomethingElse);
-localforage.setItem('key', 'value').then(doSomethingElse);
-
-localforage.getItem('key', alert);
-````
-
-localForage will use whichever persistence mechanism is available, in this order:
+As mentioned in the previous section, IndexedDB is not consistently supported across all browsers. localForage hides these types of inconsistencies from the user by implementing fallbacks when a backend driver for the datastore (such as IndexedDB) is not available. By default, localForage will select drivers in this order:
 
 1. IndexedDB
 2. WebSQL
 3. localStorage
+
+With browser compatibility issues out of your way, you're free to focus on storing and retrieving your application data.
+
+The API for localForage is asynchronous: instead of our data being delivered through return values, it will be sent to a defined callback. With this implementation, setting and getting data with localforage will look like this:
+
+```javascript
+// Set an item and specify a callback
+localforage.setItem('key', 'value', callbackYouDefine);
+
+// Get an item and specify a callback that alerts the value
+localforage.getItem('key', alert)
+````
+
+You can also use promises rather than callbacks if you prefer:
+
+```javascript
+function callbackYouDefine(value) {
+    console.log(value);
+}
+
+localforage.setItem('key', 'value').then(callbackYouDefine);
+````
 
 More documentation is available [here](http://mozilla.github.io/localForage/).
 
