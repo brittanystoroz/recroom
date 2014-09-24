@@ -2,10 +2,10 @@
 
 Maintaining and storing application data was traditionally a heavy lift where the server took on much of the responsibility. With advancements in client-side JavaScript, and the rise of MVC frameworks, we've been better able to handle the implicit model data we encounter on the client-side.
 
-We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data.
+We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. In this chapter, we'll go over techniques for detecting connectivity and how to persist application data at appropriate times regardless of a user's connection.
 
 ## Offline First
-Empathy for offline users is hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
+Empathy for our offline users is easily hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
 
 - What UI will the user see?
 - What interactivity is still available to them?
@@ -36,14 +36,14 @@ Offline.on('down', function() {
 ### When to Save State
 A solid, offline-first application will store its assets and data offline on its first load after installation. This will ensure that there are available resources for your app to pull from during subsequent uses when offline. When a connection is regained, the application should synchronize any data and update available assets.
 
-During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state whenever a user closes your application so they can pick up where they left off. 
+During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state whenever a user closes your application so they can pick up where they left off. This can be achieved by leveraging some of the client-side storage technologies available to us.
 
 ## Client-Side Storage
 A main goal of offline technologies is to seamlessly store and sync data regardless of internet connectivity. When implementing this functionality, you're likely to notice that offline techniques also benefit other aspects of your application.
 
 For instance, the load on the server is lessened, making your app more responsive and better equipped to handle a robust user experience. Additionally, potential security risks are alleviated as our need to rely on technologies such as cookies and http diminishes.
 
-Below are some of the most common techniques for successful data management in online and offline circumstances. Rec Room apps specifically make use of [IndexedDB][indexed-db] and [Ember Data][ember-data], but we'll also touch on other popular tools.
+Below are some of the most common techniques for successful data management in offline circumstances. Rec Room apps specifically make use of [IndexedDB][indexed-db] and [Ember Data][ember-data], but we'll also touch on other popular tools.
 
 ### IndexedDB
 [IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store large amounts of data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps, and is gaining momentum to become the standard driver for client-side storage.
