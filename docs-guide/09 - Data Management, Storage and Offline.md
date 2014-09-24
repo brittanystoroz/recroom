@@ -5,16 +5,16 @@ Maintaining and storing application data was traditionally a heavy lift where th
 We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. In this chapter, we'll go over techniques for detecting connectivity and how to persist application data at appropriate times regardless of a user's connection.
 
 ## Offline First
-Our empathy for offline users can be easily hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
+Our empathy for offline users can be easily hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while developing for offline use:
 
 - What UI will the user see?
 - What interactivity is still available to them?
 - Will their actions offline be reflected next time they are reconnected?
 
 ### Detecting Connectivity
-In order to provide a more seamless user experience regardless of connectivity, we must be able to determine the status of our user's connection. If a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.
+In order to gracefully handle the transitions between online and offline states, we must be able to determine the status of our user's connection.
 
-While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which makes it easy to confirm the state of a user's connectivity and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging.
+While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which makes it easy to confirm the connection state and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging. (i.e. if a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.)
 
 offline.js tests connectivity by making an XHR request to load a `/favicon.ico` file by default. You can configure the file it checks for by providing a different URL in `Offline.options`:
 
@@ -24,7 +24,7 @@ Offline.options = {checks: {xhr: {url: '/connection-test'}}};
 
 Once our connectivity check is configured, we can tell offline.js to detect the current state by calling `Offline.check()`. This will return an XHR response, and sets `Offline.state` to either `up` (if we are online) or `down` (if we are offline).
 
-We can now get the user's state by asking for the value of `Offline.state`, and provide callbacks to execute during different stages of connectivity. offline.js provides several helpful events that we can bind to for handling state changes. For example, if we want to display a notification to the user that they have gone offline, we can simply call:
+We can now get the user's state by asking for the value of `Offline.state`, and provide callbacks to execute during different stages of connectivity. offline.js provides several helpful events we can bind to for handling state changes. For example, if we want to display a notification to the user that they have gone offline, we can simply call:
 
 ```javascript
 Offline.on('down', function() {
@@ -120,9 +120,7 @@ IndexedDB is still new and thus may not work consistently across all browsers. T
 
 
 ### LocalForage
-[localForage][local-forage] is a JavaScript library that provides a localStorage-like API for interacting with a number of underlying storage technologies. It can be added to your application as a simple JavaScript file, or be installed via bower:
-
-`bower install localforage`
+[localForage][local-forage] is a JavaScript library that provides a localStorage-like API for interacting with a number of underlying storage technologies.
 
 As mentioned in the previous section, IndexedDB is not consistently supported across all browsers. localForage smooths over these types of inconsistencies for the user by implementing fallbacks when a backend driver for the datastore (such as IndexedDB) is not available. By default, localForage will select drivers in this order:
 
@@ -158,7 +156,7 @@ More documentation is available [here](http://mozilla.github.io/localForage/).
 
 
 ### Ember Data
-In Chapters 1 and 2 we briefly discussed the [Ember.js](http://emberjs.com/) framework that Rec Room uses to help structure applications. One of the many gains we get from using Ember is a solid separation of concerns.  Ember conventions make it easy to keep your model data separate from other parts of the application, allowing for greater flexibility as you iterate on your app.
+In Chapters 1 and 2 we briefly discussed the [Ember.js](http://emberjs.com/) framework that Rec Room uses to help structure your application. One of the many gains we get from using Ember is a solid separation of concerns.  Ember conventions make it easy to keep your model data separate from other parts of the application, allowing for greater flexibility as you iterate on your app.
 
 The Ember team has also introduced the [Ember Data][ember-data] library, which will help us manage data for the models in our application after they are defined.
 
@@ -189,15 +187,15 @@ As mentioned earlier in this chapter, IndexedDB is the underlying persistence me
 HighFidelity.ApplicationSerializer = DS.IndexedDBSerializer.extend();
 HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
     databaseName: 'hifi', // create a database named hifi
-    version: 1, // specify a version # for the db
-    migrations: function() { // add or update our object stores for application models
+    version: 1, // specify a version for the db
+    migrations: function() { // add or update object stores for app models
         this.addModel('podcast');
         this.addModel('episode');
     }
 });
 ````
 
-In this example, we've created a database named `hifi`, and added our IndexedDB object stores in the `migrations` method. Whenever you update your database schema, you will also need to bump the version property so IndexedDB is aware that there are changes to be made.
+In this example, we've created a database named `hifi`, and added our IndexedDB object stores in the `migrations` method. Whenever you update your database schema, you will also need to bump the version property so IndexedDB is aware there are changes to be made.
 
 By default, the keyPath for object stores is `id`. We can configure this by explicitly passing in a custom keyPath when we add our models:
 
