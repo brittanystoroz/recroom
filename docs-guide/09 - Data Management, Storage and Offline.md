@@ -12,9 +12,9 @@ For instance, the load on the server is lessened, making your app more responsiv
 Below are some of the most common techniques for successful data management in online and offline circumstances. Rec Room apps specifically make use of [IndexedDB][indexed-db] and [Ember Data][ember-data], but we'll also touch on other popular tools.
 
 ### IndexedDB
-[IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store large amounts of data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps.
+[IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store large amounts of data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps, and is gaining momentum to become the standard driver for client-side storage.
 
-Rec Room apps utilize additional libraries (explained later in this chapter) that abstract the IndexedDB implementation, but using IndexedDB on it's own is fairly simple. Let's walk through a simple implementation using our High Fidelity app from Chapter 4 as an example.
+Rec Room apps utilize additional libraries (explained later in this chapter) that abstract the IndexedDB implementation, but using IndexedDB on it's own is fairly simple. Let's walk through a quick implementation using our High Fidelity app from Chapter 4 as an example.
 
 First you must request to open a database:
 
@@ -60,12 +60,19 @@ objectStore.transaction.oncomplete = function(event) {
 }
 ````
 
-Now that we have data in our object store, we can retrieve it with a simple `get()`, where we provide a value for the keyPath we specified earlier (`rssUrl`):
+Now that we have data in our object store, we can retrieve it by calling `get()` on our object store, where we provide a value for the keyPath we specified earlier (`rssUrl`):
 
 ```javascript
-var transaction = db.transaction(["podcasts"]); // create a new transaction, specifying a list of object stores we will need access to
-var objectStore = transaction.objectStore("podcasts"); // get the podcasts object store from our transation
-var request = objectStore.get("rss.url.com/podcast-title"); // get a podcast with an rssUrl of rss.url.com/podcast-title
+// create a new transaction, specifying a list of object stores we will need access to
+var transaction = db.transaction(["podcasts"]);
+
+// get the podcasts object store from our transaction
+var objectStore = transaction.objectStore("podcasts");
+
+// get a podcast with an rssUrl of rss.url.com/podcast-title
+var request = objectStore.get("rss.url.com/podcast-title");
+
+// handle requested data when it is available
 request.onsuccess = function(event) {
   // We are provided with request.result in our onsuccess callback,
   // which gives us access to the property values on our data record
@@ -75,7 +82,7 @@ request.onsuccess = function(event) {
 
 For more information on how to work with IndexedDB, see [Using IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB) and [Basic Concepts of IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB#gloss_transaction). There is also a simple [tutorial](http://www.html5rocks.com/en/tutorials/indexeddb/todo/) on [HTML5Rocks](http://www.html5rocks.com) by Paul Kinlan that walks through basic usage of IndexedDB.
 
-IndexedDB is still new and thus may not work consistently across all browsers. The next technology we'll go over, localForage, will help you handle these browser compatibility issues. For updated information on support for IndexedDB, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
+IndexedDB is still new and thus may not work consistently across all browsers. The next technology we'll go over, localForage, will help wrangle these compatibility issues. For updated information on support for IndexedDB, check [Can I Use IndexedDB](http://caniuse.com/#feat=indexeddb).
 
 
 ### LocalForage
@@ -117,7 +124,7 @@ More documentation is available [here](http://mozilla.github.io/localForage/).
 
 
 ### Ember Data
-In Chapters 1 and 2 we briefly discussed the Ember.js framework that Rec Room uses to help structure applications. One of the many gains we get from using Ember is a solid separation of concerns.  Ember conventions make it easy to keep your app data separate from other parts of the application, allowing for greater flexibility as you iterate on your app.
+In Chapters 1 and 2 we briefly discussed the [Ember.js](http://emberjs.com/) framework that Rec Room uses to help structure applications. One of the many gains we get from using Ember is a solid separation of concerns.  Ember conventions make it easy to keep your model data separate from other parts of the application, allowing for greater flexibility as you iterate on your app.
 
 The Ember team has also introduced the [Ember Data][ember-data] library, which will help us manage data for the models in our application after they are defined.
 
@@ -142,14 +149,14 @@ episodes: DS.hasMany('episode') // a podcast model has many episodes
 ````
 
 #### Persisting Data
-As mentioned earlier in this chapter, IndexedDB is the underlying persistence mechanism in Rec Room apps. Ember Data is not tied to IndexedDB by default, (it is agnostic to underlying technologies), so we have included the npm package [ember-indexeddb-adapter](https://github.com/kurko/ember-indexeddb-adapter/) to help persist our data. Setting up the database and adding our models to it looks like this:
+As mentioned earlier in this chapter, IndexedDB is the underlying persistence mechanism in Rec Room apps. Ember Data is not tied to IndexedDB by default, (it is agnostic to underlying technologies), so we have included the npm package [ember-indexeddb-adapter](https://github.com/kurko/ember-indexeddb-adapter/) to help persist our data. The adapter abstracts the way we work with IndexedDB, but the underlying concepts are the same:
 
 ```javascript
 HighFidelity.ApplicationSerializer = DS.IndexedDBSerializer.extend();
 HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
-    databaseName: 'hifi',
-    version: 1,
-    migrations: function() {
+    databaseName: 'hifi', // create a database named hifi
+    version: 1, // specify a version # for the db
+    migrations: function() { // add or update our object stores for application models
         this.addModel('podcast');
         this.addModel('episode');
     }
@@ -181,9 +188,7 @@ Empathy for offline users is hampered by the high-speed internet we're likely co
 ### Detecting Connectivity
 In order to provide a more seamless user experience regardless of connectivity, we must be able to determine the status of our user's connection. If a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.
 
-[offline.js](http://github.hubspot.com/offline/docs/welcome/) is an offline detection library that makes it easy to confirm the state of a user's connectivity, and gracefully handle any events or tasks that need to occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging.
-
-You can start working with offline.js by simply adding it as a JavaScript file to your page.
+While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which makes it easy to confirm the state of a user's connectivity and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging.
 
 offline.js tests connectivity by making an XHR request to load a `/favicon.ico` file by default. You can configure the file it checks for by providing a different URL in `Offline.options`:
 
