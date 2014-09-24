@@ -5,7 +5,7 @@ Maintaining and storing application data was traditionally a heavy lift where th
 We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. In this chapter, we'll go over techniques for detecting connectivity and how to persist application data at appropriate times regardless of a user's connection.
 
 ## Offline First
-Empathy for our offline users is easily hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
+Our empathy for offline users can be easily hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
 
 - What UI will the user see?
 - What interactivity is still available to them?
