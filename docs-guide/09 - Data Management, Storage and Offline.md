@@ -2,14 +2,14 @@
 
 Maintaining and storing application data was traditionally a heavy lift where the server took on much of the responsibility. With advancements in client-side JavaScript, and the rise of MVC frameworks, we've been better able to handle the implicit model data we encounter on the client-side.
 
-However, developing for mobile devices adds some additional challenges. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. Luckily, there are several tools available to  help us with our client-side storage and offline data.
+We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. Additionally, mobile devices tend to have less storage space, so we need to be mindful of data size limitations. Luckily, there are several tools and libraries available to help us with exactly these issues.
 
 ## Common Strategies
-The main goal of offline technologies is to seamlessly store and sync data regardless of internet connectivity. When implementing this functionality, you're likely to notice that offline techniques also benefit other aspects of your application.
+A main goal of offline technologies is to seamlessly store and sync data regardless of internet connectivity. When implementing this functionality, you're likely to notice that offline techniques also benefit other aspects of your application.
 
 For instance, the load on the server is lessened, making your app more responsive and better equipped to handle a robust user experience. Additionally, potential security risks are alleviated as our need to rely on technologies such as cookies and http diminishes.
 
-Below are some of the most common techniques for successful data management in online and offline circumstances. Rec Room apps specifically make use of IndexedDB and Ember Data, but we'll also touch on other popular tools.
+Below are some of the most common techniques for successful data management in online and offline circumstances. Rec Room apps specifically make use of [IndexedDB][indexed-db] and [Ember Data][ember-data], but we'll also touch on other popular tools.
 
 ### IndexedDB
 [IndexedDB][indexed-db] provides client-side storage of structured data, which means we can persistently store large amounts of data inside a user's browser. It is currently the underlying persistence mechanism in Rec Room apps.
@@ -48,7 +48,7 @@ objectStore.createIndex("title", "title", { unique: false });
 
 So far we've requested that a podcasts object store be created, and we've requested an index to search it. These interactions are happening as **transactions** - operations for accessing or modifying data in the database. We must wait for these transactions to be completed before we can add data to our object store. In other words, we need to make sure the object store has, in fact, been created.
 
-IndexedDB provides a `transaction.oncomplete` handler that will be called when our object store is ready to accept data:
+IndexedDB provides a `transaction.oncomplete` event handler that will be called when our object store is ready to accept data:
 
 ```javascript
 objectStore.transaction.oncomplete = function(event) {
@@ -117,33 +117,32 @@ More documentation is available [here](http://mozilla.github.io/localForage/).
 
 
 ### Ember Data
-Recroom apps include the Ember framework to help construct an MVC architecture. The modularity Ember enforces makes it easy to keep your app data separate from other parts of the application. This allows for greater flexibility when iterating on your application.
+In Chapters 1 and 2 we briefly discussed the Ember.js framework that Rec Room uses to help structure applications. One of the many gains we get from using Ember is a solid separation of concerns.  Ember conventions make it easy to keep your app data separate from other parts of the application, allowing for greater flexibility as you iterate on your app.
 
-The [ember-data][ember-data] library will help us manage data for the Ember models in our application, but first we need to define them.
+The Ember team has also introduced the [Ember Data][ember-data] library, which will help us manage data for the models in our application after they are defined.
 
+#### Defining Models
 In our High Fidelity app from Chapter 4, we work with two different models: podcasts and episodes. Let's look at the `podcast` model defined in `/app/scripts/models/podcast_model.js`:
 
 ```javascript
 HighFidelity.Podcast = DS.Model.extend({
     title: DS.attr('string'),
     description: DS.attr('string'),
-    episodes: DS.hasMany('episode', {async: true}),
+    episodes: DS.hasMany('episode'),
     rssURL: DS.attr('string'),
 });
 ````
 
 Here we are defining our schema and setting up relationships for our model. We declare new attributes on our model with `DS.attr('type')`, where `type` is the value's expected data type. 
 
-Ember Data also provides several relationship types to help you describe how your models associate with each other. In this scenario, we are defining a one-to-many relationship, where a single `podcast` has many `episodes`:
+Ember Data also provides several relationship types to help you describe how your models associate with one another. In this scenario, we are defining a one-to-many relationship, where a single `podcast` has many `episodes`:
   
 ```javascript
-episodes: DS.hasMany('episode', {async: true}) // a podcast model has many episodes
+episodes: DS.hasMany('episode') // a podcast model has many episodes
 ````
 
-The `{async: true}` hash allows for [asynchronous data retrieval](http://www.toptal.com/emberjs/a-thorough-guide-to-ember-data#associationModifiers). This means we can request data that has an association or relationship to another data record, and specify a callback to be invoked once our associated data is available.
-
-
-Ember Data is not tied to IndexedDB by default, (it is agnostic to underlying technologies), so we have included the npm package [ember-indexeddb-adapter](https://github.com/kurko/ember-indexeddb-adapter/) to help persist our data.
+#### Persisting Data
+As mentioned earlier in this chapter, IndexedDB is the underlying persistence mechanism in Rec Room apps. Ember Data is not tied to IndexedDB by default, (it is agnostic to underlying technologies), so we have included the npm package [ember-indexeddb-adapter](https://github.com/kurko/ember-indexeddb-adapter/) to help persist our data. Setting up the database and adding our models to it looks like this:
 
 ```javascript
 HighFidelity.ApplicationSerializer = DS.IndexedDBSerializer.extend();
@@ -155,6 +154,21 @@ HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
         this.addModel('episode');
     }
 });
+````
+
+In this example, we've created a database named `hifi`, and added our IndexedDB object stores in the `migrations` method. Whenever you update your database schema, you will also need to bump the version property so IndexedDB is aware that there are changes to be made.
+
+By default, the keyPath for object stores is `id`. We can configure this by explicitly passing in a custom keyPath when we add our models:
+
+```javascript
+this.addModel('podcast', { keyPath: 'rssUrl' });
+````
+
+#### Querying Data
+
+```javascript
+this.get('store').find('podcast');
+this.get('store').find('podcast', params.podcast_id);
 ````
 
 ## Offline First
@@ -183,7 +197,7 @@ We can now get the user's state by asking for the value of `Offline.state`, and 
 
 ```javascript
 Offline.on('down', function() {
-  var message = "You can continue listening to your saved podcasts, but cannot search for new ones until a connection returns.";
+  var message = "Only podcasts which have been pre-downloaded are available.";
   var offlineNotification = new Notification('You Are Offline', { body: message });
 });
 ````

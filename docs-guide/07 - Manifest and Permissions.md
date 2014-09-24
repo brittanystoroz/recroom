@@ -65,7 +65,7 @@ Each permission requires:
 
     name: the name of the permission
     description: the reason why your app needs to use this permission
-    access: the level of access required (some permissions don't need this)
+    access: the level of access required (only needed for device storage and contacts APIs)
 
 
 PODCAST APP EXAMPLE, ADD ADDITIONAL EXAMPLE THAT REQUIRES ACCESS LEVEL FIELD PERMISSION
