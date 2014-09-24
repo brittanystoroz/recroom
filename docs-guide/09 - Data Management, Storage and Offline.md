@@ -207,8 +207,11 @@ this.addModel('podcast', { keyPath: 'rssUrl' });
 Any query against our database will return a promise that resolves to the requested dataset:
 
 ```javascript
-this.store.find('podcast'); // resolves to the collection of podcast records
-this.store.find('podcast', params.rssUrl); // resolves to a single podcast record matching the rssUrl value provided
+// resolves to the collection of podcast records:
+this.store.find('podcast');
+
+// resolves to a single podcast record matching the rssUrl value provided:
+this.store.find('podcast', params.rssUrl);
 ````
 
 
