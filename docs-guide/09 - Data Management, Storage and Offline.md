@@ -2,9 +2,43 @@
 
 Maintaining and storing application data was traditionally a heavy lift where the server took on much of the responsibility. With advancements in client-side JavaScript, and the rise of MVC frameworks, we've been better able to handle the implicit model data we encounter on the client-side.
 
-We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data. Additionally, mobile devices tend to have less storage space, so we need to be mindful of data size limitations. Luckily, there are several tools and libraries available to help us with exactly these issues.
+We do, however, face some additional challenges in this area when developing for mobile devices. Mobile users are likely going to be travelling in and out of connected areas, which means we must have a solid strategy for handling offline data.
 
-## Common Strategies
+## Offline First
+Empathy for offline users is hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
+
+- What UI will the user see?
+- What interactivity is still available to them?
+- Will their actions offline be reflected next time they are reconnected?
+
+### Detecting Connectivity
+In order to provide a more seamless user experience regardless of connectivity, we must be able to determine the status of our user's connection. If a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.
+
+While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which makes it easy to confirm the state of a user's connectivity and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging.
+
+offline.js tests connectivity by making an XHR request to load a `/favicon.ico` file by default. You can configure the file it checks for by providing a different URL in `Offline.options`:
+
+```javascript
+Offline.options = {checks: {xhr: {url: '/connection-test'}}};
+````
+
+Once our connectivity check is configured, we can tell offline.js to detect the current state by calling `Offline.check()`. This will return an XHR response, and sets `Offline.state` to either `up` (if we are online) or `down` (if we are offline).
+
+We can now get the user's state by asking for the value of `Offline.state`, and provide callbacks to execute during different stages of connectivity. offline.js provides several helpful events that we can bind to for handling state changes. For example, if we want to display a notification to the user that they have gone offline, we can simply call:
+
+```javascript
+Offline.on('down', function() {
+  var message = "Only podcasts which have been pre-downloaded are available.";
+  var offlineNotification = new Notification('You Are Offline', { body: message });
+});
+````
+
+### When to Save State
+A solid, offline-first application will store its assets and data offline on its first load after installation. This will ensure that there are available resources for your app to pull from during subsequent uses when offline. When a connection is regained, the application should synchronize any data and update available assets.
+
+During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state whenever a user closes your application so they can pick up where they left off. 
+
+## Client-Side Storage
 A main goal of offline technologies is to seamlessly store and sync data regardless of internet connectivity. When implementing this functionality, you're likely to notice that offline techniques also benefit other aspects of your application.
 
 For instance, the load on the server is lessened, making your app more responsive and better equipped to handle a robust user experience. Additionally, potential security risks are alleviated as our need to rely on technologies such as cookies and http diminishes.
@@ -178,39 +212,7 @@ this.get('store').find('podcast');
 this.get('store').find('podcast', params.podcast_id);
 ````
 
-## Offline First
-Empathy for offline users is hampered by the high-speed internet we're likely connected to during development. To truly build with offline users in mind, develop your application as if it will never have an internet connection. See how your application looks on a device or in a simulator with wifi and cellular data turned off. It may be helpful to ask yourself the following questions while you're developing for offline use:
 
-- What UI will the user see?
-- What interactivity is still available to them?
-- Will their actions offline be reflected next time they are reconnected?
-
-### Detecting Connectivity
-In order to provide a more seamless user experience regardless of connectivity, we must be able to determine the status of our user's connection. If a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.
-
-While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which makes it easy to confirm the state of a user's connectivity and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging.
-
-offline.js tests connectivity by making an XHR request to load a `/favicon.ico` file by default. You can configure the file it checks for by providing a different URL in `Offline.options`:
-
-```javascript
-Offline.options = {checks: {xhr: {url: '/connection-test'}}};
-````
-
-Once our connectivity check is configured, we can tell offline.js to detect the current state by calling `Offline.check()`. This will return an XHR response, and sets `Offline.state` to either `up` (if we are online) or `down` (if we are offline).
-
-We can now get the user's state by asking for the value of `Offline.state`, and provide callbacks to execute during different stages of connectivity. offline.js provides several helpful events that we can bind to for handling state changes. For example, if we want to display a notification to the user that they have gone offline, we can simply call:
-
-```javascript
-Offline.on('down', function() {
-  var message = "Only podcasts which have been pre-downloaded are available.";
-  var offlineNotification = new Notification('You Are Offline', { body: message });
-});
-````
-
-### When to Save State
-A solid, offline-first application will store its assets and data offline on its first load after installation. This will ensure that there are available resources for your app to pull from during subsequent uses when offline. When a connection is regained, the application should synchronize any data and update available assets.
-
-During app usage, it is a good idea to periodically save the user's state to your offline data store. Additionally, you will want to save the state locally whenever a user closes your application so they can pick up where they left off.
 
 For more guidance on offline development, see our [Offline apps developer recommendations page](https://developer.mozilla.org/en-US/Apps/Build/Offline).
 
