@@ -14,7 +14,7 @@ Our empathy for offline users can be easily hampered by the high-speed internet 
 ### Detecting Connectivity
 In order to gracefully handle the transitions between online and offline states, we must be able to determine the status of our user's connection.
 
-While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which makes it easy to confirm the connection state and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging. (i.e. if a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.)
+While there are a number of tools available for detecting connectivity, some are unreliable or behave inconsistently across browsers. You may find it helpful to use a detection library such as [offline.js](http://github.hubspot.com/offline/docs/welcome/), which allows you to confirm the connection state and handle any events that occur when toggling between on and offline. This could mean updating data, or simply displaying more informative messaging. (i.e. if a significant part of your application does not work offline, you'll want to make sure to indicate that to your users.)
 
 offline.js tests connectivity by making an XHR request to load a `/favicon.ico` file by default. You can configure the file it checks for by providing a different URL in `Offline.options`:
 
@@ -142,17 +142,7 @@ localforage.getItem('key', function(value) {
 })
 ````
 
-You can also use promises rather than callbacks if you prefer:
-
-```javascript
-function callbackYouDefine(value) {
-    console.log(value);
-}
-
-localforage.setItem('key', 'value').then(callbackYouDefine);
-````
-
-More documentation is available [here](http://mozilla.github.io/localForage/).
+You can also use promises rather than callbacks if you prefer. More documentation is available [here](http://mozilla.github.io/localForage/).
 
 
 ### Ember Data
@@ -197,7 +187,7 @@ HighFidelity.ApplicationAdapter = DS.IndexedDBAdapter.extend({
 
 In this example, we've created a database named `hifi`, and added our IndexedDB object stores in the `migrations` method. Whenever you update your database schema, you will also need to bump the version property so IndexedDB is aware there are changes to be made.
 
-By default, the keyPath for object stores is `id`. We can configure this by explicitly passing in a custom keyPath when we add our models:
+By default, the `keyPath` for object stores is `id`. We can configure this by explicitly passing in a custom `keyPath` when we add our models:
 
 ```javascript
 this.addModel('podcast', { keyPath: 'rssUrl' });
