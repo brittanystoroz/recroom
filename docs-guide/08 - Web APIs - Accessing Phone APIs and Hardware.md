@@ -28,7 +28,7 @@ function notifyOnDownloadComplete() {
 }
 ````
 
-But what would happen if we had forgotten to add the `desktop-notification` permission to our app manifest? In this scenario, users just wouldn't receive a notification upon completion of a download. This is a small feature of a much larger application &emdash; and users may not even realize something is broken &emdash; but when a WebAPI governs more substantial functionality, be sure you've set the necessary permissions. If you're confident you are using an API correctly and it still doesn't seem to be working, double-check that you didn't leave anything out of the permissions declaration in your app manifest.
+But what would happen if we had forgotten to add the `desktop-notification` permission to our app manifest? In this scenario, users just wouldn't receive a notification upon completion of a download. This is a small feature of a much larger application &mdash; and users may not even realize something is broken &mdash; but when a WebAPI governs more substantial functionality, be sure you've set the necessary permissions. If you're confident you are using an API correctly and it still doesn't seem to be working, double-check that you didn't leave anything out of the permissions declaration in your app manifest.
 
 Now let's make sure this notification only displays if a user begins an episode download and switches applications or returns to the home screen before the download completes. If they begin a download, and are still in the application, they will not need a notification because our UI will have a visual indicator that it's complete.
 
