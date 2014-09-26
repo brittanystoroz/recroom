@@ -106,3 +106,13 @@ role
 version
 
 [App CSP](https://developer.mozilla.org/en-US/Apps/CSP)
+
+
+
+Specifically, our application requested permission to the `audio-channel-content`, `storage`, and `systemXHR` APIs. Let's take a look at how these were used.
+
+Setting `storage` in our permissions simply allows us to utilize data storage in IndexedDB without size limitations. Besides adding storage to our permissions, there is no additional code necessary to work with this particular API.
+
+The `systemXHR` permission allows anonymous cross-origin XHR without the site having CORS enabled. This is necessary for us to request and fetch podcast feeds.
+
+And finally, `audio-channel-content` specifies that our podcast audio will play on a 'content' audio channel. Audio channels determine what sounds should be prioritized when using multiple applications or device features with audio. See [WebAPI/AudioChannels](https://wiki.mozilla.org/WebAPI/AudioChannels) for additional information.
