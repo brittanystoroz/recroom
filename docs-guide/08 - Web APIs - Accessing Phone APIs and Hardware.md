@@ -32,7 +32,7 @@ But what would happen if we had forgotten to add the `desktop-notification` perm
 
 Now let's make sure this notification only displays if a user begins an episode download and switches applications or returns to the home screen before the download completes. If they begin a download, and are still in the application, they will not need a notification because our UI will have a visual indicator that it's complete.
 
-In order to do this, we'll need to detect if the application is visible or not. Using the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API), we can add an event listener to our document to see if it is still visible or not. 
+In order to do this, we'll need to detect if the application is visible or not. With the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API), there is a `visibilitychange` event fired on the document that will help us determine whether or not our app is visible. For example:
 
 ```javascript
 document.addEventListener("visibilitychange", function() {
@@ -46,9 +46,9 @@ document.addEventListener("visibilitychange", function() {
 
 *Note: The PageVisibility API is not a WebAPI that we need to specify a permission for. We get this one for free. =P*
 
-So whenever a user clicks out of our application or returns to their home screen, a `visibilitychange` event is going to be fired on our document. We'll handle creating the notification when `document.hidden` is `true`.
+So whenever a user clicks out of our application, we know that `document.hidden` is going to be `true`.
 
-In our episode model (/app/scripts/models/episode_model.js), we are doing a check to see when the download is complete. Upon completion, we are setting the model's `isDownloading` property to false, and setting it's `isDownloaded` property to true. Let's also call our `notifyOnDownloadComplete` function if the document is hidden:
+In our episode model (`/app/scripts/models/episode_model.js`), we are doing a check to see when the download is complete. Upon completion, we are setting the model's `isDownloading` property to false, and setting its `isDownloaded` property to true. Let's also call our `notifyOnDownloadComplete` function if the document is hidden:
 
 ```javascript
 if (_this.get('_chunkCount') ===
@@ -62,7 +62,7 @@ if (_this.get('_chunkCount') ===
 }
 ````
 
-This will send a notification to the user's device when the download is complete if they have moved our app to the background.
+Now our users will receive a system notification as soon as the episode is finished downloading, even if they have moved our app to the background.
 
 
 Specifically, our application requested permission to the `audio-channel-content`, `storage`, and `systemXHR` APIs. Let's take a look at how these were used.
