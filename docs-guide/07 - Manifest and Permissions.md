@@ -58,7 +58,9 @@ The `launch_path` field is only required for Packaged Apps - it will be the path
 Though not required, the `installs_allowed_from` field will let us specify where users can initiate an installation of our application from. If this field is left blank, or an array containing `["*"]` is specified, installations are allowed from any site. Specifying an empty array `[]` will prevent all installations from any site.
 
 ## Application Types
-The `type` and `permissions` fields are both important to ensure your application has access to the APIs it needs. Different types of apps grant access to varying levels of permissions. If you are specifying permissions for your application, the type of application must coincide accordingly. The following type values affect permissions accordingly:
+The `type` and `permissions` fields are both important to ensure your application has access to the WebAPIs it needs. WebAPIs allow your app to access mobile device hardware and data, and will be explained further in the following chapter.
+
+Different types of apps grant access to varying levels of permissions. If you are going to be requesting permissions for your application to access WebAPIs, the type of application must coincide accordingly. The following type values affect permissions accordingly:
 
 `web`: grants least access to WebAPIs, used for apps that do not require any special permissions  
 `privileged`: greater access to WebAPIs that are available for developers to use when set in the `permissions` field of the app manifest  
@@ -69,17 +71,33 @@ Your apps will generally have a type of `web` or `privileged`. When you are spec
 ## Permissions
 When setting permissions for your application, each permission should have a name and description. Some also require an access level to be set.
 
-    name: the name of the permission
-    description: the reason why your app needs to use this permission
-    access: the level of access required (only needed for device storage and contacts APIs)
+- name: the name of the permission
+- description: the reason why your app needs to use this permission
+- access: the level of access required (only needed for device storage and contacts APIs)
 
-In our podcasts application, the manifest requested permission to the `audio-channel-content`, `storage`, and `systemXHR` APIs.
+From our Podcasts application, the manifest requested permission to the `audio-channel-content`, `storage`, and `systemXHR` APIs:
 
-Setting `storage` in our permissions simply allows us to utilize data storage in IndexedDB without size limitations.
+```javascript
+"type": "privileged",
+"permissions": {
+    "audio-channel-content": {
+        "description": "Required to play audio in the background."
+    },
+    "storage": {
+        "description": "Required to store podcast audio files and images."
+    },
+    "systemXHR": {
+        "description": "Required to download podcasts."
+    }
+}
+````
 
-The `systemXHR` permission allows anonymous cross-origin XHR without the site having CORS enabled. This is necessary for us to request and fetch podcast feeds.
+These all govern important functionality for our application.
+
+Setting `storage` in our permissions gives us data storage in IndexedDB without size limitations. The `systemXHR` permission allows anonymous cross-origin XHR without the site having CORS enabled. This is necessary for us to request and fetch podcast feeds.
 
 And finally, `audio-channel-content` specifies that our podcast audio will play on a 'content' audio channel. Audio channels determine what sounds should be prioritized when using multiple applications or device features with audio. See [WebAPI/AudioChannels](https://wiki.mozilla.org/WebAPI/AudioChannels) for additional information.
+
 
 To troubleshoot and validate your manifest file, you can use Mozilla's [app validator][https://marketplace.firefox.com/developers/validator].
 
