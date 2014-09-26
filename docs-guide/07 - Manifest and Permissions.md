@@ -7,7 +7,7 @@
 
 When we're creating an open web app, our most essential file is going to be our `manifest.webapp`. This is a required manifest file that you'll want to place in the root folder of your application.
 
-The concept of a manifest file is common practice, and you may be familiar with it from building other tools or apps for different environments. The manifest provides important details about your application (name, description, version, icons, locale strings, etc.) and should be readable by both users and the Firefox Marketplace.
+The concept of a manifest file is common practice, and you may be familiar with it from building other tools or apps for different environments. The manifest provides important details about your application (name, description, version, icons, etc.) and should be readable by both users and the Firefox Marketplace.
 
 The manifest file is also where you will specify permissions for your application that will allow it to provide advanced functionality, and alert users of what your application needs access to.
 
@@ -53,18 +53,18 @@ Some of the fields are self-explanatory: you must have a name for your applicati
 
 The `icons` field is where you will specify paths to `.png` images for your icons. If your icons are hosted internally within your application, you should use absolute paths from the app's origin. Any external paths should instead be fully qualified. Currently, in order to submit your app to the Firefox Marketplace, you must have one icon at 128x128, though another at 512x512 is recommended.
 
-The `launch_path` field is only required for Packaged apps - it will be the path that is loaded when the app starts. In our case, it is simply our application's `/index.html` file.
+The `launch_path` field is only required for Packaged Apps - it will be the path that is loaded when the app starts. In our case, it is simply our application's `/index.html` file.
 
 Though not required, the `installs_allowed_from` field will let us specify where users can initiate an installation of our application from. If this field is left blank, or an array containing `["*"]` is specified, installations are allowed from any site. Specifying an empty array `[]` will prevent all installations from any site.
 
 ## Application Types
 The `type` and `permissions` fields are both important to ensure your application has access to the APIs it needs. Different types of apps grant access to varying levels of permissions. If you are specifying permissions for your application, the type of application must coincide accordingly. The following type values affect permissions accordingly:
 
-`web`: grants least access to WebAPIs, used for apps that do not require any special permissions
-`privileged`: greater access to WebAPIs that are available for developers to use when set in the `permissions` field of the app manifest
+`web`: grants least access to WebAPIs, used for apps that do not require any special permissions  
+`privileged`: greater access to WebAPIs that are available for developers to use when set in the `permissions` field of the app manifest  
 `certified`: access to APIs that control critical device functions, not generally available for use by third party developers
 
-Your apps will generally have a type of `web` or `privileged`. When you are specifying permissions for your application, you must specify the type as `privileged`. If the `type` field is missing, it will default to `web`, which will cause unexpected behaviors when trying to access APIs.
+Your apps will generally have a type of `web` or `privileged`. When you are specifying permissions for your application, you must specify the type as `privileged`. If the `type` field is missing, it will default to `web`, which will cause unexpected behaviors when trying to access WebAPIs.
 
 ## Permissions
 When setting permissions for your application, each permission should have a name and description. Some also require an access level to be set.
@@ -80,23 +80,6 @@ Setting `storage` in our permissions simply allows us to utilize data storage in
 The `systemXHR` permission allows anonymous cross-origin XHR without the site having CORS enabled. This is necessary for us to request and fetch podcast feeds.
 
 And finally, `audio-channel-content` specifies that our podcast audio will play on a 'content' audio channel. Audio channels determine what sounds should be prioritized when using multiple applications or device features with audio. See [WebAPI/AudioChannels](https://wiki.mozilla.org/WebAPI/AudioChannels) for additional information.
-
-
-
-PODCAST APP EXAMPLE, ADD ADDITIONAL EXAMPLE THAT REQUIRES ACCESS LEVEL FIELD PERMISSION
-For example, here's an app that needs permission to use the device's contacts and alarms.
-
-<!-- "permissions": {
-  "contacts": {
-    "description": "Required for autocompletion in the share screen",
-    "access": "readcreate"
-    },
-  "alarms": {
-    "description": "Required to schedule notifications"
-  }
-} -->
-
-
 
 To troubleshoot and validate your manifest file, you can use Mozilla's [app validator][https://marketplace.firefox.com/developers/validator].
 
