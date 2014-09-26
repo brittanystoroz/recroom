@@ -64,6 +64,5 @@ if (_this.get('_chunkCount') ===
 
 Now our users will receive a system notification as soon as the episode is finished downloading, even if they have moved our app to the background.
 
-
-For a list of the APIs that can be accessed with hosted and privileged apps, see MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table.  For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page.
+For a list of the APIs that can be accessed with hosted and privileged apps, see MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table.  For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page. https://wiki.mozilla.org/WebAPI
 
