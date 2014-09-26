@@ -7,9 +7,9 @@
 
 WebAPIs are simply JavaScript APIs that allow applications to interact with mobile device features. There are a number of WebAPIs available for accessing device hardware (battery status, device vibration hardware, etc.) and data (calendar data, contacts, etc.). Leveraging these will help you build a feature-rich application.
 
-In Chapter 7 we learned how to set permissions in our application manifest to access these types of APIs. Let's walk through a couple of examples of putting them to work.
+In Chapter 7 we learned how to set permissions in our application manifest to access these types of APIs. In this chapter we'll walk through a couple examples of putting them to work.
 
-From our podcasts app in Chapter 4, let's imagine we want to push a notification to the user's device when a new episode of a podcast is finished downloading. In our application manifest, we'll need to add the permission `desktop-notification`:
+From our podcasts app in Chapter 4, let's imagine we want to push a notification to the user's device when a new episode of a podcast is finished downloading. In our application manifest, we'll need to add the permission `desktop-notification` so we can use the Notifications WebAPI:
 
 ```javascript
 "permissions": {
@@ -41,6 +41,8 @@ document.addEventListener("visibilitychange", function() {
   } 
 });
 ````
+
+
 
 
 Specifically, our application requested permission to the `audio-channel-content`, `storage`, and `systemXHR` APIs. Let's take a look at how these were used.
