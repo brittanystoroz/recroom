@@ -38,6 +38,7 @@ But what would happen if we had forgotten to add the `desktop-notification` perm
 
 If you're confident you are using an API correctly and it still doesn't seem to be working, double-check that you didn't leave anything out of the permissions declaration in your app manifest. See MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table for a list of the permissions that must be specified for access to various hardware and data.
 
+## Detecting Application Focus
 Now let's make sure this notification only displays if a user begins an episode download and switches applications or returns to the home screen before it completes. If they begin a download, and are still in the application, they will not need a notification because our UI will have a visual indicator that it's complete.
 
 In order to do this, we'll need to detect if the application is visible or not. With the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API), there is a `visibilitychange` event fired on the document that will help us determine whether or not our app is visible. For example:
@@ -70,7 +71,11 @@ if (_this.get('_chunkCount') ===
 }
 ````
 
-Now our users will receive a system notification as soon as the episode is finished downloading, even if they have moved our app to the background. Let's make use of an additional API to vibrate a user's phone when they receive this notification. Using the [Vibration API](https://developer.mozilla.org/en-US/docs/Web/Guide/API/Vibration), we can call `window.navigator.vibrate()` in our `notifyOnDownloadComplete()` function:
+Now our users will receive a system notification as soon as the episode is finished downloading, even if they have moved our app to the background. 
+
+## Device Vibration
+
+Let's make use of an additional API to vibrate a user's phone when they receive this notification. Using the [Vibration API](https://developer.mozilla.org/en-US/docs/Web/Guide/API/Vibration), we can call `window.navigator.vibrate()` in our `notifyOnDownloadComplete()` function:
 
 ```javascript
 function notifyOnDownloadComplete() {
