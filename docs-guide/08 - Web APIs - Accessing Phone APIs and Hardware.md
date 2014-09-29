@@ -39,7 +39,7 @@ But what would happen if we had forgotten to add the `desktop-notification` perm
 If you're confident you are using an API correctly and it still doesn't seem to be working, double-check that you didn't leave anything out of the permissions declaration in your app manifest. See MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table for a list of the permissions that must be specified for access to various hardware and data.
 
 ## Detecting Application Focus
-Now let's make sure this notification only displays if a user begins an episode download and switches applications or returns to the home screen before it completes. If they begin a download, and are still in the application, they will not need a notification because our UI will have a visual indicator that it's complete.
+Now let's make sure this notification only displays if a user begins an episode download and switches applications, or returns to the home screen before it completes. If they begin a download, and are still in the application, they won't need a notification because our UI will have a visual indicator that it's complete.
 
 In order to do this, we'll need to detect if the application is visible or not. With the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API), there is a `visibilitychange` event fired on the document that will help us determine whether or not our app is visible. For example:
 
@@ -100,7 +100,7 @@ Feature detection is a common practice for fine-tuning your application to adjus
 
 Feature detection is the practice of determining if a particular feature is supported and how it is implemented, and subsequently providing the most efficient method of use for different environments. We have done very basic feature detection in our code examples above, when checking the `window` for the `Notifications` object and checking for a `vibrate` method on our `navigator` object.
 
-Often times, feature detection can get more complex than this. Besides simply checking for the existence of an object, we might have to check for different implementations or methods that will change the way we use this object. For example, if we wanted to use the [GetUserMedia API](https://developer.mozilla.org/en-US/docs/NavigatorUserMedia.getUserMedia) to obtain video or audio from a user's device, we would need to check for several different prefixed versions of the getUserMedia object: 
+Often times, feature detection can get more complex than this. Besides simply checking for the existence of an object, we might have to check for different implementations or methods that will change the way we use this object. For example, if we wanted to use the [GetUserMedia API](https://developer.mozilla.org/en-US/docs/NavigatorUserMedia.getUserMedia) to obtain video or audio from a user's device, we would need to check for several different prefixed versions of the `getUserMedia` object: 
 
 ```javascript
 navigator.getUserMedia = (
