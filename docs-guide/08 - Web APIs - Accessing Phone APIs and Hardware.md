@@ -98,10 +98,20 @@ Note that we did not specify any permissions in our app manifest in order to mak
 
 Feature detection is a common practice for fine-tuning your application to adjust to its environment: the device it's running on, the browser it's being displayed in, etc. With so many devices and APIs that are constantly being improved and updated, there is a high probability you will run into problems getting your application to run smoothly in all environments.
 
-Feature detection is the practice of determining if a particular feature is supported and how it is implemented, and subsequently providing the most efficient method of use for different environments. We have done very basic feature detection in our code examples above, when checking the window for the `Notifications` object and checking for a vibrate method on our `navigator` object.
+Feature detection is the practice of determining if a particular feature is supported and how it is implemented, and subsequently providing the most efficient method of use for different environments. We have done very basic feature detection in our code examples above, when checking the `window` for the `Notifications` object and checking for a `vibrate` method on our `navigator` object.
 
-Often times, feature detection can get more complex than this. Besides simply checking for the existence of an object, we might have to check for different implementations or methods that will change the way we use this object.
+Often times, feature detection can get more complex than this. Besides simply checking for the existence of an object, we might have to check for different implementations or methods that will change the way we use this object. For example, if we wanted to use the [GetUserMedia API](https://developer.mozilla.org/en-US/docs/NavigatorUserMedia.getUserMedia) to obtain video or audio from a user's device, we would need to check for several different prefixed versions of the getUserMedia object: 
 
+```javascript
+navigator.getUserMedia = (
+  navigator.getUserMedia ||
+  navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia ||
+  navigator.msGetUserMedia
+);
+````
 
-For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page. https://wiki.mozilla.org/WebAPI
+For more information on feature detection, see [need a resource for feature-dection explanation](#).
 
+## Other APIs
+So far, we've only introduced a fraction of the WebAPIs available for use. More information on working with these and other APIs can be found on [MDN's WebAPI page](https://developer.mozilla.org/en-US/docs/WebAPI). On this page, you'll notice different categories of APIs, including some that revolve around data management and storage. In the next chapter, we'll go over some of the common strategies for data maintenance and working offline.
