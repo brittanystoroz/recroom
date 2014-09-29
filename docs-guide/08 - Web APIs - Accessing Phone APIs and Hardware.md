@@ -5,11 +5,12 @@
 
 # Chapter 8: Web APIs - Accessing Phone APIs and Hardware
 
-WebAPIs are simply JavaScript APIs that allow applications to interact with mobile device features. There are a number of WebAPIs available for accessing device hardware (battery status, device vibration hardware, etc.) and data (calendar data, contacts, etc.). Leveraging these will help you build a feature-rich application.
+WebAPIs are simply JavaScript APIs that allow applications to interact with mobile device features. There are a number of WebAPIs available for accessing device hardware (battery status, device vibration hardware, camera, etc.) and data (calendar data, contacts, etc.). Though many of these APIs are still being iterated on &mdash; and some are still working towards stabilization &mdash; there are strategies available for checking compatibility so we can build feature-rich applications.
 
 In Chapter 7 we learned how to set permissions in our application manifest to access these types of APIs. In this chapter we'll walk through a couple examples of putting them to work.
 
-From our podcasts app in Chapter 4, let's imagine we want to push a notification to the user's device when a new episode of a podcast is finished downloading. In our application manifest, we'll need to add the permission `desktop-notification` so we can use the [Notifications WebAPI](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Using_Web_Notifications):
+## Notifications 
+From our podcasts app in Chapter 4, let's imagine we want to notify our users when a new episode of a podcast is finished downloading. In our application manifest, we'll need to add the permission `desktop-notification` so we can use the [Notifications WebAPI](https://developer.mozilla.org/en-US/docs/Web/API/Notification/Using_Web_Notifications):
 
 ```javascript
 "permissions": {
@@ -23,12 +24,19 @@ After setting the appropriate permissions, creating a new notification is simple
 
 ```javascript
 function notifyOnDownloadComplete() {
-  var message = "Your podcast episode has finished downloading!";
-  var downloadNotification = new Notification('Download Complete', { body: message });
+  if ("Notification" in window) { // check that Notifications are supported in our browser
+    var message = "Your podcast episode has finished downloading!";
+    var downloadNotification = new Notification('Download Complete', { body: message });
+  }
+  else {
+    console.log("Notifications are not supported in this browser.");
+  }
 }
 ````
 
-But what would happen if we had forgotten to add the `desktop-notification` permission to our app manifest? In this scenario, users just wouldn't receive a notification upon completion of a download. This is a small feature of a much larger application &mdash; and users may not even realize something is broken &mdash; but when a WebAPI governs more substantial functionality, be sure you've set the necessary permissions. If you're confident you are using an API correctly and it still doesn't seem to be working, double-check that you didn't leave anything out of the permissions declaration in your app manifest.
+But what would happen if we had forgotten to add the `desktop-notification` permission to our app manifest? In this scenario, users just wouldn't receive a notification upon completion of a download. This is a small feature of a much larger application &mdash; and users may not even realize something is broken &mdash; but when a WebAPI governs more substantial functionality, be sure you've set the necessary permissions.
+
+If you're confident you are using an API correctly and it still doesn't seem to be working, double-check that you didn't leave anything out of the permissions declaration in your app manifest. See MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table for a list of the permissions that must be specified for access to various hardware and data.
 
 Now let's make sure this notification only displays if a user begins an episode download and switches applications or returns to the home screen before it completes. If they begin a download, and are still in the application, they will not need a notification because our UI will have a visual indicator that it's complete.
 
@@ -62,7 +70,30 @@ if (_this.get('_chunkCount') ===
 }
 ````
 
-Now our users will receive a system notification as soon as the episode is finished downloading, even if they have moved our app to the background.
+Now our users will receive a system notification as soon as the episode is finished downloading, even if they have moved our app to the background. Let's make use of an additional API to vibrate a user's phone when they receive this notification. Using the [Vibration API](https://developer.mozilla.org/en-US/docs/Web/Guide/API/Vibration), we can call `window.navigator.vibrate()` in our `notifyOnDownloadComplete()` function:
 
-For a list of the APIs that can be accessed with hosted and privileged apps, see MDN's [App Permissions](https://developer.mozilla.org/en-US/Apps/Build/App_permissions) table.  For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page. https://wiki.mozilla.org/WebAPI
+```javascript
+function notifyOnDownloadComplete() {
+  if ("Notification" in window) { // check that Notifications are supported in our browser
+    var message = "Your podcast episode has finished downloading!";
+    var downloadNotification = new Notification('Download Complete', { body: message });
+    if ("vibrate" in navigator) { // check that vibrating is supported on our device
+      window.navigator.vibrate(200); // vibrate the device once for 200ms
+    }
+  }
+  else {
+    console.log("Notifications are not supported in this browser.");
+  }
+}
+````
+
+Note that we did not specify any permissions in our app manifest in order to make use of the Vibration API. Some device APIs do not require specific permissions, and as long as we check for their existence through **feature detection**, we can be sure the functionality will work as expected.
+
+## Feature Detection
+
+
+
+
+
+For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page. https://wiki.mozilla.org/WebAPI
 

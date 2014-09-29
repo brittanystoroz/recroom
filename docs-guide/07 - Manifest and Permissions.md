@@ -11,7 +11,7 @@ The concept of a manifest file is common practice, and you may be familiar with 
 
 The manifest file is also where you will specify permissions for your application that will allow it to provide advanced functionality, and alert users of what your application needs access to.
 
-Let's look at the `manifest.webapp` file from the podcasts app introduced in Chapter 4:
+Rec Room apps will automatically create this file for you, so you'll just have to configure it to your needs. Let's look at the `manifest.webapp` file from the podcasts app introduced in Chapter 4:
 
 ```
 {
@@ -104,7 +104,8 @@ To troubleshoot and validate your manifest file, you can use Mozilla's [app vali
 [Optional manifest fields][https://developer.mozilla.org/en-US/Apps/Build/Manifest#Optional_App_Manifest_Fields]
 [App Permissions Matrix][https://developer.mozilla.org/en-US/Apps/Build/App_permissions]
 
-
+## Optional Manifest Fields
+There are several manifest fields that are important to be aware of, even though they are optional. One of these is `csp`.
 [App CSP](https://developer.mozilla.org/en-US/Apps/CSP)
 
 
