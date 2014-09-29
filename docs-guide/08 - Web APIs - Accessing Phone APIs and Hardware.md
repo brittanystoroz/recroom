@@ -5,7 +5,7 @@
 
 # Chapter 8: Web APIs - Accessing Phone APIs and Hardware
 
-WebAPIs are simply JavaScript APIs that allow applications to interact with mobile device features. There are a number of WebAPIs available for accessing device hardware (battery status, device vibration hardware, camera, etc.) and data (calendar data, contacts, etc.). Though many of these APIs are still being iterated on &mdash; and some are still working towards stabilization &mdash; there are strategies available for checking compatibility so we can build feature-rich applications.
+WebAPIs are simply JavaScript APIs that allow applications to interact with mobile device features. There are a number of WebAPIs available for accessing device hardware (battery status, device vibration hardware, camera, etc.) and data (calendar data, contacts, etc.). Though many of these APIs are still being iterated on &mdash; and some are still working towards stabilization &mdash; there are strategies available for checking compatibility so we can leverage these APIs and build feature-rich applications.
 
 In Chapter 7 we learned how to set permissions in our application manifest to access these types of APIs. In this chapter we'll walk through a couple examples of putting them to work.
 
