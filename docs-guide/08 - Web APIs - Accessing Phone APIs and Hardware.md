@@ -87,12 +87,15 @@ function notifyOnDownloadComplete() {
 }
 ````
 
-Note that we did not specify any permissions in our app manifest in order to make use of the Vibration API. Some device APIs do not require specific permissions, and as long as we check for their existence through **feature detection**, we can be sure the functionality will work as expected.
+Note that we did not specify any permissions in our app manifest in order to make use of the Vibration API. Some device APIs do not require specific permissions, and as long as we check for their available implementation through **feature detection**, we can be sure the functionality will work as expected.
 
 ## Feature Detection
 
+Feature detection is a common practice for fine-tuning your application to adjust to its environment: the device it's running on, the browser it's being displayed in, etc. With so many devices and APIs that are constantly being improved and updated, there is a high probability you will run into problems getting your application to run smoothly in all environments.
 
+Feature detection is the practice of determining if a particular feature is supported and how it is implemented, and subsequently providing the most efficient method of use for different environments. We have done very basic feature detection in our code examples above, when checking the window for the `Notifications` object and checking for a vibrate method on our `navigator` object.
 
+Often times, feature detection can get more complex than this. Besides simply checking for the existence of an object, we might have to check for different implementations or methods that will change the way we use this object.
 
 
 For more information on working with these APIs, see the [WebAPI](https://developer.mozilla.org/en-US/docs/WebAPI) page. https://wiki.mozilla.org/WebAPI
